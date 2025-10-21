@@ -1,10 +1,10 @@
-"""Domain model for the water jugs problem."""
+"""Modelo de dominio para el problema de las jarras de agua."""
 
 from services.utils import random_choice
 
 
 class Jarras:
-    """Represent the rule set for the classic jug puzzle."""
+    """Representa el conjunto de reglas del acertijo de las jarras."""
 
     def __init__(self) -> None:
         self.reglas = [
@@ -51,7 +51,7 @@ class Jarras:
         ]
 
     def get_regla(self, x, y):
-        """Return one applicable rule at random for the current state."""
+        """Devuelve una regla aplicable al azar para el estado actual."""
         reglas_validas = [r for r in self.reglas if r["condicion"](x, y)]
         if not reglas_validas:
             return None

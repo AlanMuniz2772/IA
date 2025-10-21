@@ -1,14 +1,14 @@
-"""Command-line argument parsing utilities."""
+"""Utilidades para analizar argumentos de linea de comandos."""
 
 import argparse
 
 
 class ArgumentParser:
-    """Wrapper around argparse to keep the interface dependency isolated."""
+    """Envoltura de argparse para aislar la dependencia en la interfaz."""
 
     @staticmethod
     def parse_args() -> argparse.Namespace:
-        """Parse CLI arguments and return the resulting namespace."""
+        """Analiza los argumentos de la CLI y devuelve el espacio de nombre."""
         parser = argparse.ArgumentParser(
             description="Selecciona la operacion a ejecutar: 1=jarras, 2=8-puzzle."
         )

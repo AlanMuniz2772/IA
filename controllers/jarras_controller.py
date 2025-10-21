@@ -1,10 +1,10 @@
-"""Controller for the classic water jugs problem."""
+"""Controlador del problema clasico de las jarras de agua."""
 
 from models.jarra import Jarras
 
 
 class JarrasController:
-    """Encapsulate the rule-based resolution of the water jugs setup."""
+    """Encapsula la resolucion basada en reglas del sistema de jarras."""
 
     def __init__(self) -> None:
         self.jarras = Jarras()
@@ -14,7 +14,7 @@ class JarrasController:
         self.result = {}
 
     def aplicar_regla(self):
-        """Apply one random valid rule and return the resulting state."""
+        """Aplica una regla valida al azar y devuelve el nuevo estado."""
         regla_elegida = self.jarras.get_regla(self.jarra4G, self.jarra3G)
         if regla_elegida:
             self.jarra4G, self.jarra3G = regla_elegida["accion"](

@@ -1,11 +1,9 @@
-"""Generic utility helpers shared across the project."""
+"""Funciones de utilidad genericas compartidas en el proyecto."""
 
 import random
-from typing import Sequence, TypeVar
-
-T = TypeVar("T")
 
 
-def random_choice(options: Sequence[T]) -> T:
-    """Return a random element from the provided sequence."""
+
+def random_choice(options) :
+    """Devuelve un elemento aleatorio de la secuencia proporcionada."""
     return random.choice(options)

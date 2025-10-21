@@ -1,25 +1,25 @@
-"""User interfaces for the supported problem solvers."""
+"""Interfaces de usuario para los solucionadores disponibles."""
 
 from controllers.jarras_controller import JarrasController
 from controllers.puzle_controller import PuzzleController, PuzzleResult
 
 
 class Interfaces:
-    """Base class for the different console interfaces."""
+    """Clase base para las distintas interfaces de consola."""
 
     def __init__(self, isJson: bool = False) -> None:
         self.isJson = isJson
 
 
 class Jarras_Interface(Interfaces):
-    """Console interface for the water jugs problem."""
+    """Interfaz de consola para el problema de las jarras de agua."""
 
     def __init__(self, isJson: bool = False) -> None:
         super().__init__(isJson)
         self.jarras_controller = JarrasController()
 
     def ejecutar(self) -> None:
-        """Run the automatic rule application until the goal is reached."""
+        """Aplica reglas automaticamente hasta alcanzar el objetivo."""
         while self.jarras_controller.jarra4G != 2:
             result = self.jarras_controller.aplicar_regla()
             print("----------------------------------------------------")
@@ -36,14 +36,14 @@ class Jarras_Interface(Interfaces):
 
 
 class Puzle_Interface(Interfaces):
-    """Console interface for the 8-puzzle solver."""
+    """Interfaz de consola para el solucionador del 8-puzzle."""
 
     def __init__(self, isJson: bool = False) -> None:
         super().__init__(isJson)
         self.controller = PuzzleController()
 
     def ejecutar(self) -> None:
-        """Prompt the user for puzzle configurations and launch the solver."""
+        """Solicita configuraciones al usuario e inicia el solucionador."""
         print("Resolviendo el 8-puzzle utilizando A*.")
         initial = self._solicitar_estado(
             (
@@ -55,10 +55,10 @@ class Puzle_Interface(Interfaces):
         )
 
         resultado = self.controller.resolver(initial, goal)
-        self._imprimir_resultados(resultado)
+        self._escribir_resultados_txt(resultado)
 
     def _solicitar_estado(self, mensaje: str) -> tuple[int, ...]:
-        """Read a puzzle state from the user or fall back to the provided default."""
+        """Lee un estado del puzzle ingresado por el usuario."""
         while True:
             respuesta = input(mensaje).strip()
             if not respuesta:
@@ -76,7 +76,7 @@ class Puzle_Interface(Interfaces):
                 )
 
     def _imprimir_resultados(self, resultado: PuzzleResult) -> None:
-        """Display the resulting path and basic statistics."""
+        """Muestra el camino resultante y estadisticas basicas."""
         print("\nSolucion encontrada!\n")
         for indice, estado in enumerate(resultado.path):
             print(f"Paso {indice}:")
@@ -86,3 +86,19 @@ class Puzle_Interface(Interfaces):
         print(f"Nodos explorados: {resultado.explored_nodes}")
         print(f"Nodos generados: {resultado.generated_nodes}")
         print(f"Profundidad de la solucion: {resultado.depth}")
+
+    def _escribir_resultados_txt(self, resultado: PuzzleResult) -> None:
+        """Escribe el camino y las estadisticas en un archivo de texto."""
+        print("Escribiendo resultados en 'puzzle_solution.txt'...")
+        with open("puzzle_solution.txt", "w") as archivo:
+            archivo.write("Solucion encontrada!\n\n")
+            for mensaje in resultado.process:
+                archivo.write(mensaje + "\n")
+            for indice, estado in enumerate(resultado.path):
+                archivo.write(f"Paso {indice}:\n")
+                archivo.write(estado.pretty() + "\n")
+                archivo.write("-" * 20 + "\n")
+
+            archivo.write(f"Nodos explorados: {resultado.explored_nodes}\n")
+            archivo.write(f"Nodos generados: {resultado.generated_nodes}\n")
+            archivo.write(f"Profundidad de la solucion: {resultado.depth}\n")

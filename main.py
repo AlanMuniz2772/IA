@@ -1,11 +1,11 @@
-"""Entry point for the command-line interfaces."""
+"""Punto de entrada para las interfaces de linea de comandos."""
 
 from utils.argument_parser import ArgumentParser
 from interfaces.interfaces import Jarras_Interface, Puzle_Interface
 
 
 def main() -> None:
-    """Route execution to the selected problem interface."""
+    """Dirige la ejecucion hacia la interfaz del problema elegido."""
     args = ArgumentParser.parse_args()
     operation = args.operation
     is_json = False
