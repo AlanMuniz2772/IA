@@ -2,21 +2,18 @@
 
 from dataclasses import dataclass
 from heapq import heappop, heappush
-from typing import List, Sequence, Tuple
+
 
 from models.nodo import Nodo
 from models.puzzle import PuzzleGraph, PuzzleState
-
-# Alias de tipo para facilitar la lectura
-Board = Tuple[int, ...]
 
 
 @dataclass
 class PuzzleResult:
     """Objeto de valor que resume el resultado de la busqueda."""
 
-    process: List[str]
-    path: List[PuzzleState]
+    process: list[str]
+    path: list[PuzzleState]
     explored_nodes: int
     generated_nodes: int
     depth: int
@@ -27,9 +24,9 @@ class PuzzleController:
 
     def __init__(self, heuristic: str = "misplaced") -> None:
         self.heuristic_name = heuristic
-
-    def resolver(self, initial_state: Sequence[int], goal_state: Sequence[int]) -> PuzzleResult:
-        """Run the A* search algorithm and return the resulting path."""
+    
+    def resolver(self, initial_state: tuple[int], goal_state: tuple[int]) -> PuzzleResult:
+        """Inicia la busqueda A* desde el estado inicial hasta el estado meta."""
         initial = PuzzleState(self._normalize_state(initial_state))
         goal = PuzzleState(self._normalize_state(goal_state))
 
@@ -37,7 +34,7 @@ class PuzzleController:
         #     raise ValueError("La configuracion proporcionada no es resoluble.")
 
         graph = PuzzleGraph(goal_state=goal, heuristic_name=self.heuristic_name)
-        open_nodes: List[Nodo] = []
+        open_nodes: list[Nodo] = []
         closed_costs: dict[PuzzleState, int] = {}
 
         root = Nodo(
@@ -51,7 +48,7 @@ class PuzzleController:
         explored = 0
         generated = 1
 
-        process: List[str] = []
+        process: list[str] = []
 
         return self._ejecutar_busqueda(
             goal,
@@ -67,9 +64,9 @@ class PuzzleController:
         self,
         goal: PuzzleState,
         graph: PuzzleGraph,
-        open_nodes: List[Nodo],
+        open_nodes: list[Nodo],
         closed_costs: dict[PuzzleState, int],
-        process: List[str],
+        process: list[str],
         explored: int,
         generated: int,
     ) -> PuzzleResult:
@@ -80,7 +77,7 @@ class PuzzleController:
 
             process.append(
                 self._get_state(
-                    "Explorando",
+                    "EXPLORANDO",
                     current.estado,
                     current.costo,
                     current.heuristica,
@@ -128,11 +125,15 @@ class PuzzleController:
 
     def _get_state(self, prefix: str, state: PuzzleState, cost: int, heuristic: float) -> None:
         """Compone el estado con los costos asociados."""
-        return f"{prefix} estado (g={cost}, h={heuristic}, f={cost + heuristic}):\n{state.pretty()}\n{'-' * 20}"
+        if prefix == "EXPLORANDO":
+            multiplier  = 60
+        else:
+            multiplier = 20
+        return f"{prefix} estado (g={cost}, h={heuristic}, f={cost + heuristic}):\n{state.pretty()}\n{'-' * multiplier}"
 
     @staticmethod
-    def _normalize_state(state: Sequence[int]) -> Board:
-        """Validate and convert a state sequence to the internal tuple form."""
+    def _normalize_state(state: tuple[int]) -> tuple:
+        """Valida y normaliza la representacion del estado del puzzle."""
         if len(state) != 9:
             raise ValueError("El puzzle debe contener 9 valores")
         normalized = tuple(int(value) for value in state)
@@ -141,9 +142,9 @@ class PuzzleController:
         return normalized
 
     @staticmethod
-    def _reconstruct_path(node: Nodo) -> List[PuzzleState]:
+    def _reconstruct_path(node: Nodo) -> list[PuzzleState]:
         """Reconstruye la secuencia de estados desde la raiz hasta el nodo final."""
-        path: List[PuzzleState] = []
+        path: list[PuzzleState] = []
         current = node
         while current is not None:
             path.append(current.estado)

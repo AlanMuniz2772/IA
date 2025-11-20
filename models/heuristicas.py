@@ -1,11 +1,8 @@
 """Funciones heuristicas para la busqueda del 8-puzzle."""
 
-from typing import Tuple
-
-Board = Tuple[int, ...]
 
 
-def misplaced_tiles(current: Board, goal: Board) -> int:
+def misplaced_tiles(current: tuple, goal: tuple) -> int:
     """Devuelve cuantas fichas no estan en su posicion objetivo."""
     return sum(
         1

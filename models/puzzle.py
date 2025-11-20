@@ -1,21 +1,16 @@
 """Domain model for the 8-puzzle problem."""
 
-from typing import Tuple, List
-
 from models.grafo_base import Grafo
 from models.nodo import Nodo
 from models.heuristicas import get_heuristic
 
-Board = Tuple[int, ...]
-
-
 class PuzzleState:
-    """Immutable representation of a 3x3 sliding puzzle configuration."""
+    """Reresentacion inmutable del estado del 8-puzzle."""
 
     def __init__(self, tiles):
         if len(tiles) != 9:
             raise ValueError("Debe contener 9 valores")
-        self.tiles: Board = tuple(tiles) 
+        self.tiles = tuple(tiles) 
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, PuzzleState):
@@ -29,21 +24,21 @@ class PuzzleState:
         return f"PuzzleState({self.tiles})"
 
     def index_of(self, value: int) -> int:
-        """Return the position of the requested tile."""
+        """Devuelve la posicion de la ficha solicitada."""
         return self.tiles.index(value)
 
     def as_matrix(self):
-        """Return the board as a 3x3 matrix for display purposes."""
+        """Devuelve el tablero como una matriz 3x3 para propositos de visualizacion."""
         return [list(self.tiles[i : i + 3]) for i in range(0, 9, 3)]
 
     def neighbors(self):
-        """Generate all reachable states after one valid move."""
-        blank_index = self.index_of(0) # 0 represents the blank tile
-        row, col = divmod(blank_index, 3) # Get row and column of the blank tile
+        """Genera todos los estados alcanzables despues de un movimiento valido."""
+        blank_index = self.index_of(0) # 0 representa la ficha en blanco
+        row, col = divmod(blank_index, 3) # Obtiene fila y columna de la ficha en blanco
         swaps = []
 
-        # adds swaps for each given position of the blank tile
-        # if is on the border  it doesnt add up
+        # agrega intercambios para cada posicion dada del espacio en blanco
+        # si esta en el borde no se agrega  
         if row > 0:
             swaps.append(blank_index - 3)
         if row < 2:
@@ -63,7 +58,7 @@ class PuzzleState:
             yield tuple(new_tiles)
 
     def pretty(self) -> str:
-        """Return a multi-line representation of the board."""
+        """Devuelve una representacion multilinea del tablero."""
         lines = []
         for row in self.as_matrix():
             formatted_row = " ".join("_" if value == 0 else str(value) for value in row)
@@ -72,7 +67,7 @@ class PuzzleState:
 
 
 class PuzzleGraph(Grafo):
-    """Concrete graph implementation for the 8-puzzle search space."""
+    """Grafo especifico para el 8-puzzle."""
 
     def __init__(self, goal_state: PuzzleState, heuristic_name: str = "misplaced"):
         super().__init__()
@@ -80,8 +75,8 @@ class PuzzleGraph(Grafo):
         self.heuristic = get_heuristic(heuristic_name)
 
     def expandir(self, nodo: Nodo):
-        """Return all successor nodes reachable from the provided node."""
-        successors: List[Nodo] = []
+        """Devuelve todos los nodos sucesores alcanzables desde el nodo proporcionado."""
+        successors: list[Nodo] = []
         current_state: PuzzleState = nodo.estado
 
         for candidate in current_state.neighbors():
